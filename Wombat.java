@@ -25,8 +25,17 @@ public class Wombat extends Actor
         {
             turnLeft();
         }
+        
+        if( foundLeaf() == true )
+        {
+            eatLeaf();
+        }
+        else if( canMove() == true )
+        {
+            move();
+        }
     }
-
+    
     /**
      * Move one step forward.
      */
@@ -42,7 +51,7 @@ public class Wombat extends Actor
     {
         turn(-90);
     }
-
+    
     /**
      * Set the direction we're facing. The 'direction' parameter must
      * be in the range [0..3].
@@ -61,5 +70,59 @@ public class Wombat extends Actor
     private int getLeavesEaten()
     {
         return leavesEaten;
+    }
+    
+    private boolean foundLeaf()
+    {
+        Actor leaf = getOneObjectAtOffset(0, 0, Leaf.class);
+        boolean found = false;
+        //return leaf != null; 
+        if( leaf == null )
+        {
+            found = false;
+        }
+        else
+        {
+            found = true;
+        }
+        
+        return found;
+    }
+    
+    private void eatLeaf()
+    {
+        Actor leaf = getOneObjectAtOffset(0, 0, Leaf.class);
+        
+        if( leaf != null )
+        {
+            getWorld().removeObject(leaf);
+            leavesEaten++;
+        }
+    }
+    
+    private boolean canMove()
+    {
+        int rotation = getRotation();
+        int x = getX();
+        int y = getY();
+        boolean facingEdge = false;
+        
+        if( rotation == 0 )
+        {
+            facingEdge = ( x == getWorld().getWidth() - 1);
+        }
+        else if ( rotation == 90 )
+        {
+            facingEdge = ( y == getWorld().getHeight() - 1);
+        }
+        else if (rotation == 180 )
+        {
+            facingEdge = ( x == 0 );
+        }
+        else
+        {
+            facingEdge = ( y == 0 );
+        }
+        return facingEdge;
     }
 }
